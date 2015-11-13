@@ -211,8 +211,30 @@ L'appel retourne $0.1239398$.
 
 \begin{enumerate}
   \item 
+    Prenons $\lambda$ une valeur propre de $A$ et $x$ un vecteur propre
+    associé. Par définition, on a : 
+    
+    $$A x = \lambda x$$
+
+    Donc pour tout $i$ entre $1$ et $N$ :
+
+    $$\lambda x_i = \sum_{k=1}^N a_{ik}x_k$$
+
+    Autrement dit :
+
+    $$(\lambda - a_{ii}) x_i = \sum_{k \neq i} a_{ik}x_k$$
+
+    Prenons $i$ tel que $\abs {x_i}$ soit maximal. Comme $x$ est un vecteur
+    propre, il est non nul, donc $x_i$ l'est aussi. On a alors :
+
+    \begin{align*}
+      \abs {a_{ii} - \lambda} &= \abs {\sum_{k \neq i} a_{ik} \frac {x_k}{x_i}} \\
+                              &\leq \sum_{k \neq i} \abs {a_{ik} \frac {x_k}{x_i}} \\
+                              &\leq \sum_{k \neq i} \abs {a_{ik}}
+    \end{align*}
   
-  
+    En définitive, $\lambda \in D_i$.
+
   \item 
     Se référer au fichier de commandes Scilab.
 
