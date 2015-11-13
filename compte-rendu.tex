@@ -1,0 +1,227 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{fullpage}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{url}
+
+\lstset{basicstyle=\small\tt,
+  keywordstyle=\bfseries\color{Orchid},
+  stringstyle=\it\color{Tan},
+  commentstyle=\it\color{LimeGreen},
+  showstringspaces=false}
+
+\newtheorem{question}{Question}
+\newtheorem{exo}{Exercice}
+
+\newcommand{\dx}{\,dx}
+\newcommand{\ito}{,\dotsc,}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Poly}[1]{\mathcal{P}_{#1}}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\pars}[1]{\left(#1\right)}
+\newcommand{\bigpars}[1]{\bigl(#1\bigr)}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+\title{Compte-rendu du mini-stage Scilab/Latex}
+  \author{Nathan Guyot \and Vincent Lefoulon}
+\date{Novembre 2015}
+
+% ===============
+\begin{document}
+% ===============
+\maketitle
+
+%===================================================
+\section{Travaux pratiques - Compte-rendu}
+%===================================================
+
+Les commandes Scilab se situent dans le fichier \verb+commandes.sce+.
+
+\begin{exo} Exécuter dans Scilab les commandes suivantes. Expliquer et
+  commenter les résultats.
+\begin{verbatim} 
+--> x = 1e30 
+--> y = 1e-8 
+--> z = ((y + x) - x) / y 
+--> w = (y + (x - x)) / y
+\end{verbatim}
+\end{exo}
+
+\begin{exo} On considère la fonction $f$ définie de la manière
+  suivante : pour $x \in [0,4]$ on calcule
+  \begin{itemize}
+  \item $y = \sqrt{\sqrt{\sqrt {\dots{\sqrt{ x}}}}}$ (128 fois)
+  \item puis $f(x) = ((\dots((y^2)^2)^2\dots)^2)^2$ (128 fois)
+  \end{itemize} 
+  Tracer la courbe de $f$ en fonction de $x$. Que
+  constatez-vous ? Expliquer le résultat.
+\end{exo}
+
+\begin{exo} On cherche à calculer la valeur de l'intégrale  
+  \begin{equation*}
+    I_{20} = \int_0^1 x^{20} e^{x} dx
+  \end{equation*}
+  \begin{enumerate}
+  \item Donner une formule de récurrence pour calculer cette intégrale, puis évaluer $I_{20}$
+    à partir de $I_0$
+  \item Évaluer $I_{20}$ en utilisant le développement en série de $e^x$.
+  \item Conclusions ?
+  \end{enumerate}
+\end{exo}
+
+\begin{enumerate}
+  \item 
+    Notons $P_n(x) = x^n$. On a :
+
+    \begin{align*}
+      I_n &= \int_0^1 P_n(x) e^x dx \\
+          &= [P_n \exp]_0^1 - \int_0^1 P_n' \exp \\
+          &= [P_n \exp]_0^1 - \left[ [P_n' \exp]_0^1 - \int_0^1 P_n'' \exp \right] \\
+          &= \left[ \sum_{k=0}^n (-1)^k P_n^{(k)} \exp \right]_0^1 \\
+          &= \left[ \sum_{k=0}^n (-1)^k \frac{n!}{(n-k)!}x^{(n-k)} e^x \right]_0^1 \\
+          &= \left[ (-1)^n n! e^x + \sum_{k=0}^{n-1} (-1)^k \frac{n!}{(n-k)!}x^{(n-k)} e^x \right]_0^1 \\
+          &= (-1)^n n! (e - 1) + \sum_{k=0}^{n-1} (-1)^k \frac{n!}{(n-k)!} e
+    \end{align*}
+
+    Cette formule se montre par une récurrence simple :
+
+    $I_0 = [e^x]_0^1 = e - 1 = (-1)^0 0! (e - 1)$.
+
+    Si $n \in \N$ est tel que l'identité ci-dessus soit vérifiée, on a :
+
+    \begin{align*}
+      I_{n+1} &= \int_0^1 x^{n+1} e^x dx \\
+              &= [x^{n+1} e^x]_0^1 - \int_0^1 (n+1) x^n e^x dx \\
+              &= e - (n+1)I_n \\
+    \end{align*}
+
+    En évaluant $I_{20}$ avec Scilab, on obtient $- 129.26371$, ce qui est
+    absurde vu que la fonction intégrée est positive. L'erreur provient des
+    approximations sur les flottants.
+
+  \item 
+    On a :
+
+    $e^x = \sum_{k=0}^{\infty} \frac {x^k} {k!}$.
+
+    Donc :
+
+    \begin{align*}
+      I_n &= \int_0^1 \sum_{k=0}^{\infty} \frac {x^{k+n}}{k!} dx \\
+          &= \sum_{k=0}^{\infty} \frac 1 {k!} \int_0^1 x^{k+n} dx (Beppo-Levi) \\
+          &= \sum_{k=0}^{\infty} \frac 1 {k!} \frac 1 {k+n+1} \\
+    \end{align*}
+
+    Avec Scilab, on obtient $I_{20} = 0.1238038$.
+
+  \item 
+    Les deux résultats diffèrent : la première méthode est sujette aux 
+    approximations dues aux flottants.
+    
+\end{enumerate}
+
+\begin{exo} Ici, on va calculer directement une approximation de
+  $I_{20}$ en utilisant la méthode des rectangles.  Écrire une fonction
+  {\tt I = rectangle(n)} qui calcule $I_{20}$ en utilisant $n$
+  points. Vérifier que, pour $n$ suffisamment grand, on retrouve bien le
+  même résultat qu'à la question 3.2.
+\end{exo}
+
+L'appel retourne $0.1239398$.
+
+\begin{exo} (théorique) Soit la fonction 1-périodique $f$, définie
+  sur $[-\frac{1}{2}, \frac{1}{2}[$ par
+  \begin{equation}
+    \label{f} 
+    f(x) = \left\{\begin{array}{lll} 
+        -1 & \text{pour} & -\frac{1}{2} \le x \le 0 \,,\\ 
+        1 & \text{pour} & 0< x < \frac{1}{2} \,.
+      \end{array}\right.
+  \end{equation} 
+  Calculer la série de Fourier de $f$ et expliquer en
+  quels points $x$ la formule ci-dessous est valide :
+  \begin{equation}
+    \label{Ff}
+    f(x) = \frac{4}{\pi} \sum_{n=0}^{+\infty} \frac{\sin(2(2n+1)\pi x)}{2n+1} \,.
+  \end{equation}
+\end{exo}
+
+\begin{exo} {\it (pratique)} Écrire un programme Scilab traçant la
+  série de Fourier tronquée de la fonction $f$ (formule \eqref{f}).
+  Concrètement, reprendre la formule \eqref{Ff} et calculer la somme
+  partielle des {\tt (Ntermes+1)}-premiers termes, pour une valeur de
+  {\tt Ntermes} entrée au clavier :
+  \begin{lstlisting}[language=scilab]
+    Ntermes = input('Entrer le nombre de termes')
+  \end{lstlisting}
+  Pour la boucle de contrôle : 
+  \begin{lstlisting}[language=scilab]
+    for i = 0:Ntermes 
+        S = S + ...  
+    end
+  \end{lstlisting}
+  Quel phénomène observez-vous sur le graphe? Comment varie-t-il avec
+  {\tt Ntermes}? Que pouvez-vous en conclure sur la convergence de la
+  série de Fourier?
+\end{exo}
+
+\begin{exo} Dans cet exercice, nous nous intéressons au théorème suivant :\\
+  Soit $A$ une matrice carrée d'ordre $N$. Les valeurs propres de
+  $A$ appartiennent à l'union des $N$ disques $D_k$ du plan
+  complexe, soit : $\lambda \in \bigcup\limits_{k=1}^N D_k$, où
+  $D_k$, appelé disque de Gerschg\"orin est défini par:
+  \begin{equation*}
+    D_k = \{ z \in \C : |z - a_{kk}| \leq \Lambda_k =
+    \sum\limits_{j=1,j\neq k}^N |a_{kj}| \} \,.
+  \end{equation*}  
+  \begin{enumerate}
+  \item Démontrer ce théorème.
+  \item Écrire un programme Scilab permettant de visualiser les disques
+    de Gerschg\"orin dans le plan complexe (pour tracer un cercle tracer
+    deux demi-cercles en utilisant la commande {\tt plot2d}).
+  \item Vérifier que les valeurs propres de la matrice $A$ suivante sont toutes 
+  dans l'union des disques de Gerschg\"orin de $A$ :
+  \begin{equation*}
+    A = \left( \begin{array}{cccc}
+      1+i & i & 2 \\ 
+      3 & 2+i & 1\\ 
+      1 & i   & 6
+    \end{array} \right).
+  \end{equation*}
+  \item On appelle matrice \`a diagonale strictement dominante, une
+    matrice telle que
+    \begin{equation*}
+      \forall i \quad \sum\limits_{k\neq i} |a_{ik}| < |a_{ii}|.
+    \end{equation*}
+    Démontrer, en utilisant les disques de Gerschg\"orin que toute matrice
+    à diagonale strictement dominante est inversible.
+  \end{enumerate}
+\end{exo}
+
+\begin{enumerate}
+  \item 
+  
+  
+  \item 
+    Se référer au fichier de commandes Scilab.
+
+  \item 
+
+
+  \item 
+\end{enumerate}
+
+% =============
+\end{document} 
+% =============
