@@ -134,21 +134,22 @@ function lambda = lambdak(mat, k)
 endfunction
 
 function [cx, cy, r] = dk(mat, k)
-  c = mat(k, k)
-  cx = real(c)
-  cy = imag(c)
+  a = mat(k, k)
+  cx = real(a)
+  cy = imag(a)
   r = lambdak(mat, k)
 endfunction
 
-function plot_dks(mat)
-  n = size(mat(:,1))(1)
+function plot_dks(mat, st)
+  [n, m] = size(mat)
+  disp(n)
   a = linspace(0, 2*%pi, 100)
 
   for k = 1:n
     [cx, cy, r] = dk(mat, k)
     x = cx + r*cos(a)
     y = cy + r*sin(a)
-    plot(x, y)
+    plot2d(x, y, style=st)
   end
 endfunction
 
@@ -160,4 +161,12 @@ A = [
 
 clf;
 
-plot_dks(A)
+plot_dks(A, 10)
+
+// 3.
+[R, diagevals] = spec(A)
+diago = diag(diagevals)
+for k = 1:3
+  c = diago(k, 1)
+  plot2d([real(c)], [imag(c)], style=-21)
+end
