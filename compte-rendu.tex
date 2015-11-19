@@ -242,7 +242,15 @@ L'appel retourne $0.1239398$.
     Se référer au fichier de commandes Scilab.
 
   \item 
-    On a $\Lambda_i < \abs{a_{ii}}$.
+    Prenons $A$ une matrice à diagonale strictement dominante. Comme on est en
+    dimension finie, $A$ est inversible si et seulement si sont noyau est réduit
+    à $\lbrace 0 \rbrace$, si et seulement si $0$ n'est pas valeur propre de $A$.
+
+    Prenons $\lambda$ une valeur propre de $A$. Par définition, on a 
+    $\Lambda_i < \abs{a_{ii}}$ pour tout $i$, donc il existe $k$ tel que 
+    $\abs{\lambda - a_{kk}} < \abs{a_{kk}}$ et, nécessairement, $\lambda \neq 0$.
+
+    Donc $0 \notin Sp(A)$ et $A$ est inversible. 
 \end{enumerate}
 
 % =============
